@@ -5,9 +5,12 @@ and find the next free slot of a given length. Rooms can be booked between 09:00
 
 | | |
 |---|---|
-| Frontend (Vercel) | _add link after deploy_ |
-| Backend (Render) | _add link after deploy_ |
-| API docs | _backend link_ + `/docs` |
+| Frontend (Vercel) | https://meeting-room-booking-three-eta.vercel.app |
+| Backend (Render) | https://meeting-room-booking-api-pbef.onrender.com |
+| API docs | https://meeting-room-booking-api-pbef.onrender.com/docs |
+
+The backend is on Render's free tier, which sleeps when idle, so the first request after a
+quiet spell can take up to a minute. The frontend shows a note while it waits.
 
 > **Note on tooling:** this project was built with the help of Claude Code (an AI coding
 > assistant), which Rustam confirmed was allowed for this assignment.
@@ -18,7 +21,7 @@ and find the next free slot of a given length. Rooms can be booked between 09:00
 
 - **Frontend:** Next.js 16 (App Router), Tailwind CSS v4, Framer Motion, Lucide icons
 - **Backend:** Python, FastAPI, SQLAlchemy 2, Pydantic v2
-- **Database:** PostgreSQL (Neon)
+- **Database:** PostgreSQL (Supabase, via its session pooler)
 - **Hosting:** Vercel (frontend), Render (backend)
 
 ## Project structure
@@ -49,7 +52,9 @@ render.yaml            # Render blueprint for the backend
 
 ### Backend
 
-Needs Python 3.12+ and a PostgreSQL database (a free Neon database works fine).
+Needs Python 3.12+ and a PostgreSQL database. Any Postgres works. For Supabase, use the
+**Session pooler** connection string: the direct connection is IPv6-only, and Render's free
+tier can't reach it.
 
 ```bash
 cd backend
@@ -183,6 +188,9 @@ The room's bookings for the day are sorted by start time. A cursor starts at 09:
   check, the slot finder and the room+date filter, and `(booking_date)` for the main screen,
   which shows all rooms for a date.
 - A `CHECK (end_time > start_time)` constraint as a final safety net.
+- Row-level security is switched on for both tables. Supabase serves public tables through
+  its own REST API with a public key, which would bypass the booking rules. With RLS on and
+  no policies that API returns nothing, while this backend (the table owner) is unaffected.
 
 ---
 

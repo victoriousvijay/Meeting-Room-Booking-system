@@ -78,6 +78,9 @@ frontend/
 
 ## Running locally
 
+> Just want to try the app? Use the live links at the top. This section is for running
+> the code on your own machine, which is why the URLs below are `localhost`.
+
 ### Backend
 
 Needs Python 3.12+ and a PostgreSQL database. Any Postgres works. For Supabase, use the

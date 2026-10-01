@@ -115,8 +115,8 @@ the booking that caused it:
 
 ```json
 {
-  "detail": "Orion is already booked from 10:00 to 11:00 on 2026-09-15 by \"Sprint planning\" (booking #1).",
-  "conflicting_booking": { "id": 1, "room_name": "Orion", "start_time": "10:00", "end_time": "11:00", "...": "..." }
+  "detail": "Ganga is already booked from 10:00 to 11:00 on 2026-09-15 by \"Sprint planning\" (booking #1).",
+  "conflicting_booking": { "id": 1, "room_name": "Ganga", "start_time": "10:00", "end_time": "11:00", "...": "..." }
 }
 ```
 

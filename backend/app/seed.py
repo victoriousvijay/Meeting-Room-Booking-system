@@ -4,11 +4,11 @@ from app.database import Base, SessionLocal, engine
 from app.models import Room
 
 ROOMS = [
-    {"name": "Orion", "capacity": 4, "location": "Floor 1 - near reception"},
-    {"name": "Lyra", "capacity": 6, "location": "Floor 1 - east wing"},
-    {"name": "Vega", "capacity": 8, "location": "Floor 2 - east wing"},
-    {"name": "Atlas", "capacity": 12, "location": "Floor 2 - west wing"},
-    {"name": "Draco", "capacity": 20, "location": "Floor 3 - boardroom"},
+    {"name": "Ganga", "capacity": 4, "location": "Floor 1 - near reception"},
+    {"name": "Yamuna", "capacity": 6, "location": "Floor 1 - east wing"},
+    {"name": "Kaveri", "capacity": 8, "location": "Floor 2 - east wing"},
+    {"name": "Narmada", "capacity": 12, "location": "Floor 2 - west wing"},
+    {"name": "Godavari", "capacity": 20, "location": "Floor 3 - boardroom"},
 ]
 
 

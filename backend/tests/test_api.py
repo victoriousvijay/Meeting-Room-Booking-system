@@ -19,7 +19,7 @@ def test_create_booking(client):
     assert res.status_code == 201
     body = res.json()
     assert body["booking"]["start_time"] == "10:00"
-    assert body["booking"]["room_name"] == "Orion"
+    assert body["booking"]["room_name"] == "Ganga"
     assert "Planning" in body["message"]
 
 

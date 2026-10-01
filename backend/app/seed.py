@@ -1,4 +1,4 @@
-from sqlalchemy import func, select
+from sqlalchemy import func, select, text
 
 from app.database import Base, SessionLocal, engine
 from app.models import Room
@@ -16,6 +16,15 @@ def init_db() -> None:
     # create_all only creates missing tables, so running this on every boot is
     # safe. With a single fixed schema, a migration tool would be overkill here.
     Base.metadata.create_all(bind=engine)
+
+    if engine.dialect.name == "postgresql":
+        # Supabase also serves every public table through its own REST API, using
+        # a key that is public by design. That would let anyone skip our conflict
+        # rules. RLS with no policies closes that path; this app connects as the
+        # table owner, which RLS doesn't apply to.
+        with engine.begin() as conn:
+            for table in Base.metadata.sorted_tables:
+                conn.execute(text(f'ALTER TABLE "{table.name}" ENABLE ROW LEVEL SECURITY'))
 
     with SessionLocal() as db:
         if db.scalar(select(func.count()).select_from(Room)) == 0:

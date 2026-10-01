@@ -1,5 +1,6 @@
 "use client";
 
+// Loads bookings for the selected date/room and keeps the list in sync after changes.
 import { useCallback, useEffect, useState } from "react";
 import { describeError, listBookings } from "@/lib/api";
 import type { Booking } from "@/lib/types";

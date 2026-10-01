@@ -29,22 +29,50 @@ quiet spell can take up to a minute. The frontend shows a note while it waits.
 ```
 backend/
   app/
-    scheduling.py      # pure booking rules: overlap, working hours, next free slot
-    services/          # business logic that uses the database
-    routers/           # thin HTTP handlers, no business logic
-    models.py          # SQLAlchemy tables and indexes
-    schemas.py         # Pydantic request/response models
-    errors.py          # app errors mapped to 400 / 404 / 409
-    main.py            # app setup, CORS, error handlers
-    seed.py            # creates tables and seeds 5 rooms on startup
-  tests/               # unit tests for the rules + API tests
+    main.py              # app setup: routes, CORS, error handling
+    config.py            # settings from environment variables
+    database.py          # DB engine and session per request
+    models.py            # tables: rooms, bookings (+ indexes)
+    schemas.py           # request/response shapes (Pydantic)
+    errors.py            # errors mapped to 400 / 404 / 409
+    seed.py              # creates tables and the 5 rooms on startup
+    scheduling.py        # THE CORE LOGIC: overlap check, working hours, next free slot
+    services/
+      bookings.py        # list / create (conflict check) / cancel
+      rooms.py           # list / get / next free slot
+    routers/
+      bookings.py        # /api/bookings endpoints (no logic, call services)
+      rooms.py           # /api/rooms endpoints (no logic, call services)
+  tests/
+    test_scheduling.py   # every edge case of the core logic
+    test_api.py          # endpoints and status codes
+    conftest.py          # test client with an in-memory database
 frontend/
-  app/                 # layout and the single page
-  components/          # dashboard, room card, booking modal, slot finder, toasts
-  hooks/               # data fetching for rooms and bookings
-  lib/                 # API client, time helpers, form validation
-render.yaml            # Render blueprint for the backend
+  app/
+    layout.tsx           # page shell, font, providers
+    page.tsx             # renders the dashboard
+  components/
+    BookingDashboard.tsx # the main screen; owns state and create/cancel actions
+    Filters.tsx          # date picker + room filter
+    RoomCard.tsx         # one room: day bar + its bookings + cancel
+    BookingModal.tsx     # new-booking form with validation
+    NextSlotFinder.tsx   # "find a free slot" panel
+    Toast.tsx            # toast notifications
+    States.tsx           # loading skeleton, error and empty states
+    Providers.tsx        # toasts + reduced-motion setting for the whole app
+  hooks/
+    useRooms.ts          # loads rooms
+    useBookings.ts       # loads bookings for the selected date/room
+  lib/
+    api.ts               # every backend call + error messages
+    types.ts             # data shapes shared with the backend
+    time.ts              # time/date helpers, working hours
+    validation.ts        # form rules (same as the backend's)
 ```
+
+**How a request flows:** page (`components/`) → `lib/api.ts` → backend `routers/` →
+`services/` → `scheduling.py` for the rules → database. Errors come back as
+`{"detail": "..."}` and are shown in a toast.
 
 ---
 
@@ -95,6 +123,14 @@ Open http://localhost:3000.
 | backend | `DATABASE_URL` | `postgresql://user:pass@host/db?sslmode=require` | Postgres connection. `postgres://` and `postgresql://` URLs both work. |
 | backend | `CORS_ORIGINS` | `http://localhost:3000,https://my-app.vercel.app` | Comma-separated frontend origins allowed to call the API. |
 | frontend | `NEXT_PUBLIC_API_URL` | `http://localhost:8000` | Base URL of the backend, no trailing slash. |
+
+### Deployment settings
+
+| | Setting |
+|---|---|
+| **Render** (web service, Python) | Build: `cd backend && pip install -r requirements.txt` · Start: `cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT` · Env: `PYTHON_VERSION=3.12.7`, `DATABASE_URL`, `CORS_ORIGINS` |
+| **Vercel** | Root directory: `frontend` · Framework: Next.js · Env: `NEXT_PUBLIC_API_URL` |
+| **Supabase** | Copy the **Session pooler** URI into Render's `DATABASE_URL` |
 
 ---
 

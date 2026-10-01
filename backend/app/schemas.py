@@ -1,3 +1,5 @@
+"""Request and response shapes for the API (validated by Pydantic)."""
+
 import datetime as dt
 from typing import Annotated
 

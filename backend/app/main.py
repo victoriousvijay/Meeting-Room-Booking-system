@@ -1,3 +1,5 @@
+"""App entry point: wires up routes, CORS and error handling."""
+
 import logging
 from contextlib import asynccontextmanager
 

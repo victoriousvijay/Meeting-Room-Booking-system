@@ -1,3 +1,5 @@
+"""Errors the services raise; main.py turns them into HTTP responses."""
+
 from typing import Any
 
 

@@ -1,3 +1,5 @@
+"""Database tables: rooms and bookings."""
+
 import datetime as dt
 
 from sqlalchemy import CheckConstraint, Date, DateTime, ForeignKey, Index, String, Time, func

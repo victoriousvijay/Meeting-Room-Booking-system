@@ -1,3 +1,4 @@
+// Shapes of the data the backend sends and receives (see backend/app/schemas.py).
 export type Room = {
   id: number;
   name: string;

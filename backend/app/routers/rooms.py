@@ -1,3 +1,5 @@
+"""HTTP routes for /api/rooms. Each one just calls the room service."""
+
 import datetime as dt
 
 from fastapi import APIRouter, Depends, Query

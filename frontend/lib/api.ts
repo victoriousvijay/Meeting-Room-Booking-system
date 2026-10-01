@@ -1,3 +1,4 @@
+// Every call to the backend goes through this file.
 import type { Booking, BookingInput, BookingResult, NextSlot, Room } from "./types";
 
 const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000").replace(/\/+$/, "");

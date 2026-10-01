@@ -1,5 +1,6 @@
 "use client";
 
+// Loads the room list once, with loading/error state and a retry.
 import { useEffect, useState } from "react";
 import { describeError, listRooms } from "@/lib/api";
 import type { Room } from "@/lib/types";

@@ -1,10 +1,10 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { CircleAlert, CircleCheck, Info, X } from "lucide-react";
+import { CircleAlert, CircleCheck, X } from "lucide-react";
 import { createContext, useCallback, useContext, useRef, useState } from "react";
 
-type ToastKind = "success" | "error" | "info";
+type ToastKind = "success" | "error";
 
 type ToastInput = { kind: ToastKind; title: string; message: string };
 type Toast = ToastInput & { id: number };
@@ -13,10 +13,9 @@ const ToastContext = createContext<((toast: ToastInput) => void) | null>(null);
 
 const MAX_VISIBLE = 4;
 
-const styles: Record<ToastKind, { icon: typeof Info; tone: string }> = {
+const styles: Record<ToastKind, { icon: typeof CircleCheck; tone: string }> = {
   success: { icon: CircleCheck, tone: "text-emerald-600" },
   error: { icon: CircleAlert, tone: "text-red-600" },
-  info: { icon: Info, tone: "text-indigo-600" },
 };
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {

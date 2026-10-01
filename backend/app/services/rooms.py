@@ -1,3 +1,5 @@
+"""Room operations: list, look up, and find the next free slot."""
+
 import datetime as dt
 
 from sqlalchemy import select

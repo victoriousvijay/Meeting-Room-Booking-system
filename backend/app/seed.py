@@ -1,3 +1,5 @@
+"""Creates the tables and the starting rooms when the app boots."""
+
 from sqlalchemy import func, select, text
 
 from app.database import Base, SessionLocal, engine
@@ -30,8 +32,3 @@ def init_db() -> None:
         if db.scalar(select(func.count()).select_from(Room)) == 0:
             db.add_all(Room(**room) for room in ROOMS)
             db.commit()
-
-
-if __name__ == "__main__":
-    init_db()
-    print("Database ready.")

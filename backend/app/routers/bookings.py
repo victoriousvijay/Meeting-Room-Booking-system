@@ -1,3 +1,5 @@
+"""HTTP routes for /api/bookings. Each one just calls the booking service."""
+
 import datetime as dt
 
 from fastapi import APIRouter, Depends, Query, status

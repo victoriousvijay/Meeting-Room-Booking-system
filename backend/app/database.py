@@ -1,3 +1,5 @@
+"""Database engine, session factory and the per-request session dependency."""
+
 from collections.abc import Iterator
 
 from sqlalchemy import create_engine

@@ -2,21 +2,20 @@
 __pycache__/
 *.pyc
 .venv/
-venv/
 .pytest_cache/
 *.db
 
 # Node / Next.js
 node_modules/
 .next/
-out/
+.vercel/
 next-env.d.ts
 *.tsbuildinfo
 
-# Env files (keep the examples)
+# Env files (the .env.example files are committed)
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
 
 # Editors / OS
 .vscode/

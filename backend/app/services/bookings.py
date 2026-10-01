@@ -1,3 +1,5 @@
+"""Booking operations: list, create (with the conflict check) and cancel."""
+
 import datetime as dt
 
 from sqlalchemy import select

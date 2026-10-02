@@ -5,29 +5,25 @@ rooms, people and bookings. Members book rooms and invite colleagues; admins man
 and people and see usage analytics. Overlapping bookings are impossible, and rooms can be
 booked between 09:00 and 18:00.
 
-> **Branches:** `main` is the original take-home submission (single page, no login).
-> `saas` (this README) extends it into a full product. Both are deployed separately and
-> share one Supabase database, with the SaaS tables in their own `roomsync` schema.
+| | |
+|---|---|
+| Live app | https://roomsync-nine.vercel.app |
+| API | https://roomsync-api-2mnn.onrender.com |
+| API docs | https://roomsync-api-2mnn.onrender.com/docs |
 
-| | SaaS version (`saas`) | Assignment (`main`) |
-|---|---|---|
-| Frontend (Vercel) | https://roomsync-nine.vercel.app | https://meeting-room-booking-three-eta.vercel.app |
-| Backend (Render) | https://roomsync-api-2mnn.onrender.com | https://meeting-room-booking-api-pbef.onrender.com |
-| API docs | https://roomsync-api-2mnn.onrender.com/docs | https://meeting-room-booking-api-pbef.onrender.com/docs |
-
-Both backends are on Render's free tier and sleep when idle; the first request after a quiet
+The API runs on Render's free tier and sleeps when idle, so the first request after a quiet
 spell can take up to a minute.
 
-> **Note on tooling:** this project was built with the help of Claude Code (an AI coding
-> assistant), which Rustam confirmed was allowed for this assignment.
+> Built with the help of Claude Code (an AI coding assistant).
 
 ---
 
 ## Features
 
 **For everyone**
-- **Dashboard:** today's meetings, rooms free right now, your meetings, room usage, a live
-  timeline of every room with a "now" line, and your next meetings.
+- **Dashboard:** your next meeting with a live countdown ("starts in 25 min" / "happening
+  now"), today's stats, a live timeline of every room with a "now" line, which rooms are
+  free or in use right now (and until when, with one-click booking), and what's later for you.
 - **Schedule:** any day as a rooms × hours timeline plus an agenda list, with a room filter.
   Click an empty slot to book it; click a booking to see who's in it.
 - **Find a room:** enter the length, number of people and must-have equipment, and get every
@@ -102,10 +98,11 @@ backend/tests/
   test_scheduling.py   # every edge case of the core logic
   test_api.py          # endpoints, permissions and workspace isolation
 frontend/
-  app/page.tsx         # landing page
+  app/page.tsx         # landing page (dark hero, parallax, scroll-driven word reveal)
   app/(auth)/          # login, signup, join
   app/(app)/           # logged-in pages (layout.tsx sends anyone else to /login):
                        #   dashboard, schedule, meetings, find, rooms, people, analytics, settings
+  components/landing/  # landing-page dashboard preview and word reveal
   components/          # AppShell (sidebar), Timeline, BookingModal, BookingDetails,
                        # BookingActions (create/cancel + toasts for every page), ui.tsx (buttons,
                        # cards, modal...), Toast, States (loading/error)
@@ -275,16 +272,14 @@ Open http://localhost:3000.
 | backend | `TOKEN_LIFETIME_HOURS` | How long a login lasts (default 168 = 7 days) |
 | frontend | `NEXT_PUBLIC_API_URL` | Backend base URL, no trailing slash |
 
-### Deploying the `saas` branch
+### Deploying
 
-1. Use a **new** Postgres database, or the same one as `main` with `DB_SCHEMA=roomsync`
-   (the live deployment does this: both versions share one Supabase project, with the
-   SaaS tables in their own `roomsync` schema). The table layouts differ, and `create_all`
-   doesn't alter existing tables.
-2. Render: same build/start commands as `main` (`cd backend && pip install -r requirements.txt`,
-   `cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT`), branch `saas`, and set
-   `DATABASE_URL`, `JWT_SECRET`, `CORS_ORIGINS`, `PYTHON_VERSION=3.12.7`.
-3. Vercel: root directory `frontend`, branch `saas`, `NEXT_PUBLIC_API_URL` = the Render URL.
+1. **Database:** any Postgres. The live deployment uses Supabase (session pooler) with
+   `DB_SCHEMA=roomsync`, so the tables live in their own schema.
+2. **Render** (Python web service): build `cd backend && pip install -r requirements.txt`,
+   start `cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT`, and set
+   `DATABASE_URL`, `JWT_SECRET`, `CORS_ORIGINS`, `DB_SCHEMA` and `PYTHON_VERSION=3.12.7`.
+3. **Vercel:** root directory `frontend`, framework Next.js, `NEXT_PUBLIC_API_URL` = the Render URL.
 
 ---
 

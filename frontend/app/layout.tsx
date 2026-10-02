@@ -1,11 +1,24 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Geist, Instrument_Serif, Inter } from "next/font/google";
 import Providers from "@/components/Providers";
 import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+});
+
+// Used by the landing page only: Inter for text, Instrument Serif for the italic accent word.
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument-serif",
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
@@ -15,7 +28,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} h-full antialiased`}>
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${inter.variable} ${instrumentSerif.variable} h-full antialiased`}
+    >
       <body className="min-h-full">
         <Providers>{children}</Providers>
       </body>

@@ -1,36 +1,80 @@
 "use client";
 
 // Small building blocks shared by every page, so the look stays consistent.
-import { motion } from "framer-motion";
+import { animate, motion, useMotionValue, useTransform, type Variants } from "framer-motion";
 import { LoaderCircle, X, type LucideIcon } from "lucide-react";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useId } from "react";
 
 export function cn(...classes: (string | false | null | undefined)[]) {
   return classes.filter(Boolean).join(" ");
 }
 
+// ---------- motion presets ----------
+
+const EASE_OUT = [0.16, 1, 0.3, 1] as const;
+
+/** Parent of a staggered entrance: children using `rise` appear one after another. */
+export const stagger: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.06, delayChildren: 0.04 } },
+};
+
+export const rise: Variants = {
+  hidden: { opacity: 0, y: 14 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: EASE_OUT } },
+};
+
 // ---------- buttons ----------
 
 const buttonVariants = {
-  primary: "bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm shadow-indigo-600/20",
-  secondary: "border border-zinc-300 bg-white text-zinc-800 hover:bg-zinc-50",
-  ghost: "text-zinc-600 hover:bg-zinc-100",
-  danger: "bg-red-600 text-white hover:bg-red-700",
+  primary: "btn-cut bg-white text-black hover:bg-white/90",
+  accent: "btn-cut bg-indigo-500 text-white hover:bg-indigo-400",
+  secondary: "btn-cut-border text-white",
+  ghost: "rounded-lg text-white/70 hover:bg-white/[0.06] hover:text-white",
+  danger: "btn-cut bg-red-500 text-white hover:bg-red-400",
 };
 
-function buttonClasses(variant: keyof typeof buttonVariants, size: "sm" | "md", className?: string) {
+type Variant = keyof typeof buttonVariants;
+type Size = "sm" | "md";
+
+function buttonClasses(variant: Variant, size: Size, className?: string) {
   return cn(
-    "inline-flex items-center justify-center gap-1.5 rounded-lg font-medium transition disabled:cursor-not-allowed disabled:opacity-60",
-    size === "sm" ? "px-2.5 py-1.5 text-xs" : "px-3.5 py-2 text-sm",
+    "inline-flex select-none items-center justify-center font-medium transition duration-150 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50",
+    size === "sm" ? "px-3 py-1.5 text-xs" : "px-4 py-2.5 text-sm",
     buttonVariants[variant],
     className,
   );
 }
 
+function ButtonContent({
+  loading,
+  icon: Icon,
+  size,
+  children,
+}: {
+  loading?: boolean;
+  icon?: LucideIcon;
+  size: Size;
+  children: React.ReactNode;
+}) {
+  const iconSize = size === "sm" ? "size-3.5" : "size-4";
+  // One wrapper span, so the outline variant's dark inner layer can sit behind it.
+  return (
+    <span className="inline-flex items-center gap-2">
+      {loading ? (
+        <LoaderCircle className={cn("animate-spin", iconSize)} aria-hidden />
+      ) : (
+        Icon && <Icon className={iconSize} aria-hidden />
+      )}
+      {children}
+    </span>
+  );
+}
+
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: keyof typeof buttonVariants;
-  size?: "sm" | "md";
+  variant?: Variant;
+  size?: Size;
   loading?: boolean;
   icon?: LucideIcon;
 };
@@ -39,7 +83,7 @@ export function Button({
   variant = "primary",
   size = "md",
   loading = false,
-  icon: Icon,
+  icon,
   className,
   children,
   disabled,
@@ -47,18 +91,10 @@ export function Button({
   ...rest
 }: ButtonProps) {
   return (
-    <button
-      type={type}
-      disabled={disabled || loading}
-      className={buttonClasses(variant, size, className)}
-      {...rest}
-    >
-      {loading ? (
-        <LoaderCircle className={cn("animate-spin", size === "sm" ? "size-3.5" : "size-4")} aria-hidden />
-      ) : (
-        Icon && <Icon className={size === "sm" ? "size-3.5" : "size-4"} aria-hidden />
-      )}
-      {children}
+    <button type={type} disabled={disabled || loading} className={buttonClasses(variant, size, className)} {...rest}>
+      <ButtonContent loading={loading} icon={icon} size={size}>
+        {children}
+      </ButtonContent>
     </button>
   );
 }
@@ -68,21 +104,22 @@ export function ButtonLink({
   href,
   variant = "primary",
   size = "md",
-  icon: Icon,
+  icon,
   className,
   children,
 }: {
   href: string;
-  variant?: keyof typeof buttonVariants;
-  size?: "sm" | "md";
+  variant?: Variant;
+  size?: Size;
   icon?: LucideIcon;
   className?: string;
   children: React.ReactNode;
 }) {
   return (
     <Link href={href} className={buttonClasses(variant, size, className)}>
-      {Icon && <Icon className={size === "sm" ? "size-3.5" : "size-4"} aria-hidden />}
-      {children}
+      <ButtonContent icon={icon} size={size}>
+        {children}
+      </ButtonContent>
     </Link>
   );
 }
@@ -90,51 +127,96 @@ export function ButtonLink({
 // ---------- layout ----------
 
 export function Card({ className, children }: { className?: string; children: React.ReactNode }) {
-  return <div className={cn("rounded-xl border border-zinc-200 bg-white", className)}>{children}</div>;
+  return <div className={cn("glass rounded-2xl", className)}>{children}</div>;
 }
 
 export function PageHeader({
+  eyebrow,
   title,
   description,
   actions,
 }: {
-  title: string;
+  eyebrow?: React.ReactNode;
+  title: React.ReactNode;
   description?: React.ReactNode;
   actions?: React.ReactNode;
 }) {
   return (
-    <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: EASE_OUT }}
+      className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
+    >
       <div>
-        <h1 className="text-xl font-semibold tracking-tight text-zinc-900 sm:text-2xl">{title}</h1>
-        {description && <p className="mt-1 text-sm text-zinc-500">{description}</p>}
+        {eyebrow && (
+          <p className="mb-2 text-xs font-medium uppercase tracking-[0.2em] text-indigo-300/80">{eyebrow}</p>
+        )}
+        <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">{title}</h1>
+        {description && <p className="mt-1.5 text-sm text-white/50">{description}</p>}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
-    </div>
+    </motion.div>
   );
 }
+
+/** Counts up to a number on first render ("12", "4/5" and "38%" all work); other text shows as-is. */
+export function AnimatedNumber({ value }: { value: React.ReactNode }) {
+  const text = String(value);
+  const match = /^(\d+(?:\.\d+)?)(.*)$/.exec(text);
+  const target = match ? Number(match[1]) : null;
+  const decimals = match?.[1].includes(".") ? 1 : 0;
+  const suffix = match?.[2] ?? "";
+  const count = useMotionValue(0);
+  const display = useTransform(count, (v) => `${v.toFixed(decimals)}${suffix}`);
+
+  useEffect(() => {
+    if (target === null) return;
+    const controls = animate(count, target, { duration: 1, ease: EASE_OUT });
+    return () => controls.stop();
+  }, [target, count]);
+
+  if (target === null) return <>{value}</>;
+  return <motion.span>{display}</motion.span>;
+}
+
+const statTones = {
+  indigo: "from-indigo-500/30 to-indigo-500/5 text-indigo-300",
+  emerald: "from-emerald-500/30 to-emerald-500/5 text-emerald-300",
+  amber: "from-amber-500/30 to-amber-500/5 text-amber-300",
+  violet: "from-violet-500/30 to-violet-500/5 text-violet-300",
+};
 
 export function StatCard({
   label,
   value,
   hint,
   icon: Icon,
+  tone = "indigo",
 }: {
   label: string;
   value: React.ReactNode;
   hint?: React.ReactNode;
   icon: LucideIcon;
+  tone?: keyof typeof statTones;
 }) {
   return (
-    <Card className="p-4">
-      <div className="flex items-center justify-between">
-        <p className="text-sm text-zinc-500">{label}</p>
-        <span className="grid size-8 place-items-center rounded-lg bg-indigo-50 text-indigo-600">
+    <motion.div
+      variants={rise}
+      whileHover={{ y: -3 }}
+      className="glass rounded-2xl p-4 transition-colors hover:border-white/15 sm:p-5"
+    >
+      <div className="flex items-start justify-between gap-2">
+        <p className="text-xs font-medium text-white/50 sm:text-sm">{label}</p>
+        <span className={cn("grid size-9 shrink-0 place-items-center rounded-xl bg-gradient-to-b", statTones[tone])}>
           <Icon className="size-4" aria-hidden />
         </span>
       </div>
-      <p className="mt-2 text-2xl font-semibold tabular-nums text-zinc-900">{value}</p>
-      {hint && <p className="mt-0.5 text-xs text-zinc-500">{hint}</p>}
-    </Card>
+      <p className="mt-3 text-3xl font-semibold tracking-tight tabular-nums text-white">
+        <AnimatedNumber value={value} />
+      </p>
+      {hint && <p className="mt-1 text-xs text-white/40">{hint}</p>}
+    </motion.div>
   );
 }
 
@@ -150,30 +232,39 @@ export function EmptyState({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center rounded-xl border border-dashed border-zinc-300 bg-white px-6 py-12 text-center">
-      <span className="grid size-11 place-items-center rounded-full bg-zinc-100 text-zinc-500">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className="flex flex-col items-center rounded-2xl border border-dashed border-white/10 bg-white/[0.015] px-6 py-14 text-center"
+    >
+      <span className="grid size-12 place-items-center rounded-2xl bg-white/[0.05] text-white/60 ring-1 ring-white/10">
         <Icon className="size-5" aria-hidden />
       </span>
-      <p className="mt-3 font-medium text-zinc-900">{title}</p>
-      {description && <p className="mt-1 max-w-sm text-sm text-zinc-500">{description}</p>}
-      {action && <div className="mt-4">{action}</div>}
-    </div>
+      <p className="mt-4 font-medium text-white">{title}</p>
+      {description && <p className="mt-1 max-w-sm text-sm text-white/50">{description}</p>}
+      {action && <div className="mt-5">{action}</div>}
+    </motion.div>
   );
 }
 
 // ---------- labels ----------
 
 const badgeTones = {
-  neutral: "bg-zinc-100 text-zinc-700",
-  indigo: "bg-indigo-50 text-indigo-700",
-  green: "bg-emerald-50 text-emerald-700",
-  amber: "bg-amber-50 text-amber-800",
-  red: "bg-red-50 text-red-700",
+  neutral: "bg-white/[0.06] text-white/70 ring-white/10",
+  indigo: "bg-indigo-500/15 text-indigo-200 ring-indigo-400/20",
+  green: "bg-emerald-500/15 text-emerald-200 ring-emerald-400/20",
+  amber: "bg-amber-500/15 text-amber-200 ring-amber-400/20",
+  red: "bg-red-500/15 text-red-200 ring-red-400/20",
 };
 
 export function Badge({ tone = "neutral", children }: { tone?: keyof typeof badgeTones; children: React.ReactNode }) {
   return (
-    <span className={cn("inline-flex items-center rounded-md px-1.5 py-0.5 text-[11px] font-medium", badgeTones[tone])}>
+    <span
+      className={cn(
+        "inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-medium ring-1 ring-inset",
+        badgeTones[tone],
+      )}
+    >
       {children}
     </span>
   );
@@ -181,12 +272,12 @@ export function Badge({ tone = "neutral", children }: { tone?: keyof typeof badg
 
 // A stable colour per name, so the same person always looks the same everywhere.
 const avatarColours = [
-  "bg-indigo-100 text-indigo-700",
-  "bg-emerald-100 text-emerald-700",
-  "bg-amber-100 text-amber-800",
-  "bg-sky-100 text-sky-700",
-  "bg-rose-100 text-rose-700",
-  "bg-violet-100 text-violet-700",
+  "from-indigo-400 to-indigo-600",
+  "from-emerald-400 to-emerald-600",
+  "from-amber-300 to-amber-500",
+  "from-sky-400 to-sky-600",
+  "from-rose-400 to-rose-600",
+  "from-violet-400 to-violet-600",
 ];
 
 function initials(name: string) {
@@ -194,17 +285,26 @@ function initials(name: string) {
   return ((parts[0]?.[0] ?? "") + (parts.length > 1 ? parts[parts.length - 1][0] : "")).toUpperCase();
 }
 
-export function Avatar({ name, size = "md" }: { name: string; size?: "sm" | "md" | "lg" }) {
+export function Avatar({
+  name,
+  size = "md",
+  ring = "ring-[#0c0c12]",
+}: {
+  name: string;
+  size?: "sm" | "md" | "lg";
+  ring?: string;
+}) {
   const hash = [...name].reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
   return (
     <span
       title={name}
       className={cn(
-        "inline-grid shrink-0 place-items-center rounded-full font-semibold ring-2 ring-white",
+        "inline-grid shrink-0 place-items-center rounded-full bg-gradient-to-br font-semibold text-white ring-2",
         avatarColours[hash % avatarColours.length],
+        ring,
         size === "sm" && "size-6 text-[10px]",
         size === "md" && "size-8 text-xs",
-        size === "lg" && "size-10 text-sm",
+        size === "lg" && "size-11 text-sm",
       )}
     >
       {initials(name)}
@@ -212,15 +312,20 @@ export function Avatar({ name, size = "md" }: { name: string; size?: "sm" | "md"
   );
 }
 
-export function AvatarStack({ names, max = 4 }: { names: string[]; max?: number }) {
+export function AvatarStack({ names, max = 4, ring }: { names: string[]; max?: number; ring?: string }) {
   const extra = names.length - max;
   return (
-    <div className="flex -space-x-1.5">
+    <div className="flex -space-x-1">
       {names.slice(0, max).map((name, i) => (
-        <Avatar key={`${name}-${i}`} name={name} size="sm" />
+        <Avatar key={`${name}-${i}`} name={name} size="sm" ring={ring} />
       ))}
       {extra > 0 && (
-        <span className="inline-grid size-6 place-items-center rounded-full bg-zinc-200 text-[10px] font-semibold text-zinc-600 ring-2 ring-white">
+        <span
+          className={cn(
+            "inline-grid size-6 place-items-center rounded-full bg-white/10 text-[10px] font-semibold text-white/80 ring-2",
+            ring ?? "ring-[#0c0c12]",
+          )}
+        >
           +{extra}
         </span>
       )}
@@ -231,10 +336,10 @@ export function AvatarStack({ names, max = 4 }: { names: string[]; max?: number 
 // ---------- forms ----------
 
 export const inputClass =
-  "w-full rounded-lg border bg-white px-3 py-2 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20";
+  "w-full rounded-xl border bg-white/[0.04] px-3.5 py-2.5 text-sm text-white outline-none transition placeholder:text-white/30 hover:bg-white/[0.06] focus:border-indigo-400/70 focus:bg-white/[0.06] focus:ring-4 focus:ring-indigo-500/15";
 
 export function fieldBorder(error?: string) {
-  return error ? "border-red-400" : "border-zinc-300";
+  return error ? "border-red-400/60" : "border-white/10";
 }
 
 export function Field({
@@ -250,12 +355,18 @@ export function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-sm font-medium text-zinc-700">{label}</span>
+      <span className="mb-1.5 block text-[13px] font-medium text-white/70">{label}</span>
       {children}
       {error ? (
-        <span className="mt-1 block text-xs text-red-600">{error}</span>
+        <motion.span
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-1.5 block text-xs text-red-300"
+        >
+          {error}
+        </motion.span>
       ) : (
-        hint && <span className="mt-1 block text-xs text-zinc-500">{hint}</span>
+        hint && <span className="mt-1.5 block text-xs text-white/40">{hint}</span>
       )}
     </label>
   );
@@ -289,7 +400,7 @@ export function Modal({
   return (
     <div className="fixed inset-0 z-40 flex items-end justify-center sm:items-center sm:p-4">
       <motion.div
-        className="absolute inset-0 bg-zinc-900/40 backdrop-blur-[2px]"
+        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -299,21 +410,26 @@ export function Modal({
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: 24 }}
-        transition={{ type: "spring", stiffness: 380, damping: 34 }}
+        initial={{ opacity: 0, y: 24, scale: 0.96 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 16, scale: 0.97 }}
+        transition={{ type: "spring", stiffness: 420, damping: 32 }}
         className={cn(
-          "relative max-h-[92vh] w-full overflow-y-auto rounded-t-2xl bg-white p-5 shadow-xl sm:rounded-2xl",
+          "relative max-h-[92vh] w-full overflow-y-auto rounded-t-3xl border border-white/10 bg-[#0d0d14]/95 p-6 shadow-2xl shadow-black/60 backdrop-blur-xl sm:rounded-3xl",
           wide ? "sm:max-w-xl" : "sm:max-w-md",
         )}
       >
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <h2 className="text-base font-semibold text-zinc-900">{title}</h2>
+        {/* A thin light along the top edge, like the landing page's glass. */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"
+        />
+        <div className="mb-5 flex items-center justify-between gap-3">
+          <h2 className="text-lg font-semibold tracking-tight text-white">{title}</h2>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600"
+            className="rounded-lg p-1.5 text-white/40 transition duration-200 hover:rotate-90 hover:bg-white/[0.06] hover:text-white"
             aria-label="Close"
           >
             <X className="size-5" />
@@ -336,19 +452,28 @@ export function Tabs<T extends string>({
   options: { value: T; label: string }[];
   onChange: (value: T) => void;
 }) {
+  // Unique per instance, so two tab bars on one page don't share the sliding pill.
+  const pill = useId();
   return (
-    <div className="inline-flex rounded-lg bg-zinc-100 p-1">
+    <div className="inline-flex rounded-xl border border-white/10 bg-white/[0.03] p-1">
       {options.map((o) => (
         <button
           key={o.value}
           type="button"
           onClick={() => onChange(o.value)}
           className={cn(
-            "rounded-md px-3 py-1.5 text-sm font-medium transition",
-            value === o.value ? "bg-white text-zinc-900 shadow-sm" : "text-zinc-500 hover:text-zinc-800",
+            "relative rounded-lg px-3.5 py-1.5 text-sm font-medium transition-colors",
+            value === o.value ? "text-white" : "text-white/50 hover:text-white/80",
           )}
         >
-          {o.label}
+          {value === o.value && (
+            <motion.span
+              layoutId={pill}
+              className="absolute inset-0 rounded-lg bg-white/10 ring-1 ring-white/10"
+              transition={{ type: "spring", stiffness: 450, damping: 35 }}
+            />
+          )}
+          <span className="relative">{o.label}</span>
         </button>
       ))}
     </div>

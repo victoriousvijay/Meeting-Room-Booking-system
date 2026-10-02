@@ -23,25 +23,33 @@ function percent(minutes: number) {
 }
 
 const roleStyles = {
-  organizer: "bg-indigo-600 text-white hover:bg-indigo-700",
-  attendee: "bg-emerald-500 text-white hover:bg-emerald-600",
-  other: "bg-zinc-200 text-zinc-700 hover:bg-zinc-300",
+  organizer:
+    "bg-gradient-to-b from-indigo-400 to-indigo-600 text-white shadow-indigo-500/30 ring-indigo-300/40 hover:shadow-indigo-500/50",
+  attendee:
+    "bg-gradient-to-b from-emerald-400 to-emerald-600 text-white shadow-emerald-500/25 ring-emerald-300/40 hover:shadow-emerald-500/45",
+  other: "bg-white/[0.09] text-white/80 shadow-black/20 ring-white/15 hover:bg-white/[0.14]",
+};
+
+const legendDots = {
+  organizer: "bg-indigo-500",
+  attendee: "bg-emerald-500",
+  other: "bg-white/25",
 };
 
 export function TimelineLegend() {
-  const items = [
-    ["Organised by you", roleStyles.organizer],
-    ["You're invited", roleStyles.attendee],
-    ["Other teams", roleStyles.other],
+  const items: [string, keyof typeof legendDots][] = [
+    ["Organised by you", "organizer"],
+    ["You're invited", "attendee"],
+    ["Other teams", "other"],
   ];
   return (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-500">
-      {items.map(([label, style]) => (
+    <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs text-white/45">
+      {items.map(([label, kind]) => (
         <span key={label} className="inline-flex items-center gap-1.5">
-          <span className={cn("size-2.5 rounded-sm", style)} /> {label}
+          <span className={cn("size-2 rounded-full", legendDots[kind])} /> {label}
         </span>
       ))}
-      <span>Click an empty slot to book it.</span>
+      <span className="text-white/30">Click an empty slot to book it.</span>
     </div>
   );
 }
@@ -67,79 +75,101 @@ export default function Timeline({ rooms, bookings, now, onEmptySlot, onBooking 
         {/* hour labels */}
         <div className="grid grid-cols-[150px_1fr]">
           <div />
-          <div className="relative h-6">
+          <div className="relative h-7">
             {HOURS.map((h) => (
               <span
                 key={h}
-                className="absolute -translate-x-1/2 text-[11px] tabular-nums text-zinc-400"
+                className="absolute -translate-x-1/2 text-[11px] font-medium tabular-nums text-white/35"
                 style={{ left: `${percent(h * 60)}%` }}
               >
                 {String(h).padStart(2, "0")}:00
               </span>
             ))}
+            {showNow && nowMin !== null && (
+              <span
+                className="absolute -translate-x-1/2 rounded-full bg-red-500 px-1.5 py-px text-[10px] font-semibold tabular-nums text-white shadow-lg shadow-red-500/40"
+                style={{ left: `${percent(nowMin)}%`, top: 14 }}
+              >
+                {fromMinutes(nowMin)}
+              </span>
+            )}
           </div>
         </div>
 
-        {rooms.map((room) => {
-          const roomBookings = bookings.filter((b) => b.room_id === room.id);
-          return (
-            <div key={room.id} className="grid grid-cols-[150px_1fr] border-t border-zinc-100">
-              <div className="flex flex-col justify-center py-2 pr-3">
-                <span className="truncate text-sm font-medium text-zinc-800">{room.name}</span>
-                <span className="text-xs text-zinc-500">{room.capacity} seats</span>
-              </div>
-              <div
-                className="group relative h-14 cursor-pointer bg-zinc-50/60 hover:bg-indigo-50/50"
-                onClick={(e) => handleRowClick(e, room.id)}
-                title={`Book ${room.name}`}
+        <div className="mt-1 space-y-1.5">
+          {rooms.map((room, roomIndex) => {
+            const roomBookings = bookings.filter((b) => b.room_id === room.id);
+            return (
+              <motion.div
+                key={room.id}
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: roomIndex * 0.05, duration: 0.4 }}
+                className="grid grid-cols-[150px_1fr]"
               >
-                {HOURS.map((h) => (
-                  <span
-                    key={h}
-                    className="pointer-events-none absolute inset-y-0 border-l border-zinc-200/70"
-                    style={{ left: `${percent(h * 60)}%` }}
-                  />
-                ))}
+                <div className="flex flex-col justify-center pr-3">
+                  <span className="truncate text-sm font-medium text-white/90">{room.name}</span>
+                  <span className="text-xs text-white/35">{room.capacity} seats</span>
+                </div>
+                <div
+                  className="group relative h-14 cursor-pointer overflow-hidden rounded-xl bg-white/[0.025] ring-1 ring-inset ring-white/[0.05] transition-colors hover:bg-indigo-500/[0.07] hover:ring-indigo-400/20"
+                  onClick={(e) => handleRowClick(e, room.id)}
+                  title={`Book ${room.name}`}
+                >
+                  {HOURS.slice(1, -1).map((h) => (
+                    <span
+                      key={h}
+                      className="pointer-events-none absolute inset-y-0 border-l border-white/[0.05]"
+                      style={{ left: `${percent(h * 60)}%` }}
+                    />
+                  ))}
 
-                {roomBookings.map((b) => {
-                  const left = percent(toMinutes(b.start_time));
-                  const width = percent(toMinutes(b.end_time)) - left;
-                  return (
-                    <motion.button
-                      key={b.id}
-                      type="button"
-                      initial={{ opacity: 0, scale: 0.96 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      onClick={(e) => {
-                        e.stopPropagation(); // don't also trigger "book this slot"
-                        onBooking(b);
-                      }}
-                      className={cn(
-                        "absolute inset-y-1.5 overflow-hidden rounded-md px-2 text-left text-xs shadow-sm transition",
-                        roleStyles[b.my_role ?? "other"],
-                      )}
-                      style={{ left: `calc(${left}% + 1px)`, width: `calc(${width}% - 2px)` }}
-                      title={`${b.title} · ${b.start_time}-${b.end_time} · ${b.organizer.name}`}
-                    >
-                      <span className="block truncate font-medium">{b.title}</span>
-                      <span className="block truncate tabular-nums opacity-80">
-                        {b.start_time}-{b.end_time}
-                      </span>
-                    </motion.button>
-                  );
-                })}
+                  {roomBookings.map((b, i) => {
+                    const left = percent(toMinutes(b.start_time));
+                    const width = percent(toMinutes(b.end_time)) - left;
+                    return (
+                      <motion.button
+                        key={b.id}
+                        type="button"
+                        initial={{ opacity: 0, scaleX: 0.6 }}
+                        animate={{ opacity: 1, scaleX: 1 }}
+                        whileHover={{ y: -2 }}
+                        transition={{ delay: roomIndex * 0.05 + i * 0.04 + 0.15, type: "spring", stiffness: 300, damping: 26 }}
+                        style={{
+                          left: `calc(${left}% + 2px)`,
+                          width: `calc(${width}% - 4px)`,
+                          transformOrigin: "left center",
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation(); // don't also trigger "book this slot"
+                          onBooking(b);
+                        }}
+                        className={cn(
+                          "absolute inset-y-1.5 overflow-hidden rounded-lg px-2.5 text-left text-xs shadow-lg ring-1 ring-inset transition-shadow",
+                          roleStyles[b.my_role ?? "other"],
+                        )}
+                        title={`${b.title} · ${b.start_time}-${b.end_time} · ${b.organizer.name}`}
+                      >
+                        <span className="block truncate font-semibold">{b.title}</span>
+                        <span className="block truncate tabular-nums opacity-75">
+                          {b.start_time}-{b.end_time}
+                        </span>
+                      </motion.button>
+                    );
+                  })}
 
-                {showNow && nowMin !== null && (
-                  <span
-                    className="pointer-events-none absolute inset-y-0 w-0.5 bg-red-500"
-                    style={{ left: `${percent(nowMin)}%` }}
-                    aria-hidden
-                  />
-                )}
-              </div>
-            </div>
-          );
-        })}
+                  {showNow && nowMin !== null && (
+                    <span
+                      className="pointer-events-none absolute inset-y-0 w-0.5 bg-red-500 shadow-[0_0_12px_rgba(239,68,68,0.8)]"
+                      style={{ left: `${percent(nowMin)}%` }}
+                      aria-hidden
+                    />
+                  )}
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

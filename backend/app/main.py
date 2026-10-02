@@ -18,10 +18,10 @@ logger = logging.getLogger("room_booking")
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    if settings.uses_dev_secret_in_production:
-        # Anyone who knows the dev secret (it's in the repo) could forge a login
-        # token for any user, so refuse to start rather than run insecurely.
-        raise RuntimeError("Set the JWT_SECRET environment variable before using a real database.")
+    if settings.has_weak_secret_in_production:
+        # With the dev secret (it's in the repo) or a short one, anyone could forge
+        # a login token for any user, so refuse to start rather than run insecurely.
+        raise RuntimeError("Set JWT_SECRET to a random string of at least 32 characters before using a real database.")
     init_db()
     yield
 

@@ -33,8 +33,11 @@ class Settings(BaseSettings):
         return [o.strip().rstrip("/") for o in self.cors_origins.split(",") if o.strip()]
 
     @property
-    def uses_dev_secret_in_production(self) -> bool:
-        return self.jwt_secret == DEV_JWT_SECRET and self.sqlalchemy_url.startswith("postgresql")
+    def has_weak_secret_in_production(self) -> bool:
+        # An empty or short secret is as bad as the published dev one: tokens
+        # signed with it can be forged.
+        weak = self.jwt_secret == DEV_JWT_SECRET or len(self.jwt_secret) < 32
+        return weak and self.sqlalchemy_url.startswith("postgresql")
 
 
 settings = Settings()

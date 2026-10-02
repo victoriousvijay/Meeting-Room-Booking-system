@@ -1,5 +1,8 @@
 """Settings read from environment variables (or a local .env file)."""
 
+import re
+
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Fine for local development only. Startup refuses it when a real Postgres
@@ -15,6 +18,17 @@ class Settings(BaseSettings):
     jwt_secret: str = DEV_JWT_SECRET
     token_lifetime_hours: int = 24 * 7
     seed_demo_data: bool = True
+    # Optional Postgres schema to keep this app's tables in, so it can share one
+    # database with another app (e.g. a single free Supabase project).
+    db_schema: str | None = None
+
+    @field_validator("db_schema")
+    @classmethod
+    def plain_identifier(cls, value: str | None) -> str | None:
+        # It ends up inside SQL, so only allow a plain lower-case identifier.
+        if value and not re.fullmatch(r"[a-z_][a-z0-9_]{0,62}", value):
+            raise ValueError("DB_SCHEMA must be lower-case letters, digits and underscores")
+        return value or None
 
     @property
     def sqlalchemy_url(self) -> str:

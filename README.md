@@ -267,14 +267,17 @@ Open http://localhost:3000.
 | backend | `DATABASE_URL` | Postgres connection (`postgres://` or `postgresql://`). For Supabase use the **Session pooler** URI. |
 | backend | `JWT_SECRET` | Long random string used to sign login tokens. **Required** with Postgres. |
 | backend | `CORS_ORIGINS` | Comma-separated frontend origins, e.g. `https://my-app.vercel.app` |
+| backend | `DB_SCHEMA` | Optional. Keeps this app's tables in their own Postgres schema (e.g. `roomsync`) so it can share a database with another app. Needs a direct connection or Supabase's **session** pooler. |
 | backend | `SEED_DEMO_DATA` | `true` (default) seeds the demo workspace on an empty database |
 | backend | `TOKEN_LIFETIME_HOURS` | How long a login lasts (default 168 = 7 days) |
 | frontend | `NEXT_PUBLIC_API_URL` | Backend base URL, no trailing slash |
 
 ### Deploying the `saas` branch
 
-1. Create a **new** Postgres database. The schema differs from `main`, and tables are
-   created with `create_all`, which doesn't alter existing ones.
+1. Use a **new** Postgres database, or the same one as `main` with `DB_SCHEMA=roomsync`
+   (the live deployment does this: both versions share one Supabase project, with the
+   SaaS tables in their own `roomsync` schema). The table layouts differ, and `create_all`
+   doesn't alter existing tables.
 2. Render: same build/start commands as `main` (`cd backend && pip install -r requirements.txt`,
    `cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT`), branch `saas`, and set
    `DATABASE_URL`, `JWT_SECRET`, `CORS_ORIGINS`, `PYTHON_VERSION=3.12.7`.

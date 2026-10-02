@@ -10,7 +10,7 @@ from fastapi.responses import JSONResponse
 
 from app.config import settings
 from app.errors import AppError
-from app.routers import auth, bookings, people, rooms, workspace
+from app.routers import bookings, rooms
 from app.seed import init_db
 
 logger = logging.getLogger("room_booking")
@@ -18,22 +18,14 @@ logger = logging.getLogger("room_booking")
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    if settings.has_weak_secret_in_production:
-        # With the dev secret (it's in the repo) or a short one, anyone could forge
-        # a login token for any user, so refuse to start rather than run insecurely.
-        raise RuntimeError("Set JWT_SECRET to a random string of at least 32 characters before using a real database.")
     init_db()
     yield
 
 
 app = FastAPI(
-    title="RoomSync API",
-    version="2.0.0",
-    description=(
-        "Meeting room booking for teams: workspaces, people, rooms and bookings "
-        "between 09:00 and 18:00 without double-booking. Log in via /api/auth/login, "
-        "then use the Authorize button with the returned token."
-    ),
+    title="Meeting Room Booking API",
+    version="1.0.0",
+    description="Book meeting rooms between 09:00 and 18:00 without double-booking.",
     lifespan=lifespan,
 )
 
@@ -84,16 +76,13 @@ async def handle_validation_error(_: Request, exc: RequestValidationError):
     )
 
 
-app.include_router(auth.router)
 app.include_router(rooms.router)
 app.include_router(bookings.router)
-app.include_router(people.router)
-app.include_router(workspace.router)
 
 
 @app.get("/", include_in_schema=False)
 def root():
-    return {"service": "roomsync", "docs": "/docs"}
+    return {"service": "meeting-room-booking", "docs": "/docs"}
 
 
 @app.get("/health", tags=["meta"])

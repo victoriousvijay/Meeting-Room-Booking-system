@@ -9,14 +9,14 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "RoomSync - Meeting rooms for teams",
-  description: "Book meeting rooms without double-booking, see who's meeting where, and know how your space is used.",
+  title: "Meeting Room Booking",
+  description: "Book meeting rooms without double-booking.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${geistSans.variable} h-full antialiased`}>
-      <body className="min-h-full">
+      <body className="flex min-h-full flex-col">
         <Providers>{children}</Providers>
       </body>
     </html>

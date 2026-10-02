@@ -100,11 +100,10 @@ backend/tests/
   test_scheduling.py   # every edge case of the core logic
   test_api.py          # endpoints, permissions and workspace isolation
 frontend/
-  app/page.tsx         # landing page (dark hero, parallax, scroll-driven word reveal)
+  next.config.ts       # sends the root URL to the landing page (landing/)
   app/(auth)/          # login, signup, join
   app/(app)/           # logged-in pages (layout.tsx sends anyone else to /login):
                        #   dashboard, schedule, meetings, find, rooms, people, analytics, settings
-  components/landing/  # landing-page dashboard preview and word reveal
   components/          # AppShell (sidebar), Timeline, BookingModal, BookingDetails,
                        # BookingActions (create/cancel + toasts for every page), ui.tsx (buttons,
                        # cards, modal...), Toast, States (loading/error)

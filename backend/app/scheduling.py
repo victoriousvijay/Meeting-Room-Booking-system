@@ -65,14 +65,19 @@ def find_conflict(start: dt.time, end: dt.time, existing: Iterable[T]) -> T | No
     return None
 
 
-def find_next_slot(bookings: Iterable[TimeRange], duration: int) -> tuple[dt.time, dt.time] | None:
+def find_next_slot(
+    bookings: Iterable[TimeRange], duration: int, earliest: dt.time = WORK_START
+) -> tuple[dt.time, dt.time] | None:
     """Earliest [start, end) of `duration` minutes that is free, or None.
 
     Walks the day in start-time order with a cursor marking "free from here".
     Each booking either leaves a big enough gap before it (done) or pushes the
     cursor to its end. Whatever is left after the last booking is the final gap.
+
+    `earliest` lets a search for today skip the hours that have already passed.
+    Bookings that end before it are harmless: max() below never moves the cursor back.
     """
-    cursor = to_minutes(WORK_START)
+    cursor = max(to_minutes(WORK_START), to_minutes(earliest))
     day_end = to_minutes(WORK_END)
 
     for booking in sorted(bookings, key=lambda b: b.start_time):

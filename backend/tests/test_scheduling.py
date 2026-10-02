@@ -120,6 +120,15 @@ class TestNextSlot:
         assert find_next_slot([], 540) == (t("09:00"), t("18:00"))
         assert find_next_slot([], 541) is None
 
+    def test_earliest_skips_the_past(self):
+        # Searching today at 11:10: the 09:00 gap is gone, 10:00-10:30 already ended.
+        day = slots("10:00-10:30", "12:00-13:00")
+        assert find_next_slot(day, 30, earliest=t("11:10")) == (t("11:10"), t("11:40"))
+        assert find_next_slot(day, 60, earliest=t("11:10")) == (t("13:00"), t("14:00"))
+
+    def test_earliest_after_closing_time(self):
+        assert find_next_slot([], 15, earliest=t("17:50")) is None
+
     def test_nested_booking_does_not_move_cursor_back(self):
         # 10:00-10:30 sits inside 09:00-12:00; the free time starts at 12:00, not 10:30.
         day = slots("09:00-12:00", "10:00-10:30")

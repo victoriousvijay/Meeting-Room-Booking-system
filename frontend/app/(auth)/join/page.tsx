@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
+import PasswordInput from "@/components/PasswordInput";
 import { useToast } from "@/components/Toast";
 import { Button, Field, cn, fieldBorder, inputClass } from "@/components/ui";
 import { api, describeError } from "@/lib/api";
@@ -27,8 +28,8 @@ function JoinForm() {
   const [errors, setErrors] = useState<Partial<Record<keyof Form, string>>>({});
   const [submitting, setSubmitting] = useState(false);
 
-  const set = (key: keyof Form) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm((f) => ({ ...f, [key]: e.target.value }));
+  const set = (key: keyof Form) => (value: string) => {
+    setForm((f) => ({ ...f, [key]: value }));
     setErrors((errs) => ({ ...errs, [key]: undefined }));
   };
 
@@ -56,28 +57,56 @@ function JoinForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="mt-6 space-y-4">
+    <form onSubmit={handleSubmit} noValidate className="mt-8 space-y-4">
       <Field label="Join code" error={errors.join_code}>
         <input
           value={form.join_code}
-          onChange={set("join_code")}
-          placeholder="e.g. NIMBUS26"
-          className={cn(inputClass, "font-mono uppercase tracking-widest", fieldBorder(errors.join_code))}
+          onChange={(e) => set("join_code")(e.target.value)}
+          placeholder="NIMBUS26"
+          className={cn(
+            inputClass,
+            "text-center font-mono text-lg uppercase tracking-[0.35em]",
+            fieldBorder(errors.join_code),
+          )}
         />
       </Field>
-      <Field label="Your name" error={errors.name}>
-        <input autoComplete="name" value={form.name} onChange={set("name")} className={cn(inputClass, fieldBorder(errors.name))} />
-      </Field>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field label="Your name" error={errors.name}>
+          <input
+            autoComplete="name"
+            value={form.name}
+            onChange={(e) => set("name")(e.target.value)}
+            className={cn(inputClass, fieldBorder(errors.name))}
+          />
+        </Field>
+        <Field label="Department (optional)">
+          <input
+            placeholder="e.g. Engineering"
+            value={form.department}
+            onChange={(e) => set("department")(e.target.value)}
+            className={cn(inputClass, "border-white/10")}
+          />
+        </Field>
+      </div>
       <Field label="Work email" error={errors.email}>
-        <input type="email" autoComplete="email" value={form.email} onChange={set("email")} className={cn(inputClass, fieldBorder(errors.email))} />
+        <input
+          type="email"
+          autoComplete="email"
+          placeholder="you@company.com"
+          value={form.email}
+          onChange={(e) => set("email")(e.target.value)}
+          className={cn(inputClass, fieldBorder(errors.email))}
+        />
       </Field>
       <Field label="Password" error={errors.password} hint="At least 8 characters.">
-        <input type="password" autoComplete="new-password" value={form.password} onChange={set("password")} className={cn(inputClass, fieldBorder(errors.password))} />
+        <PasswordInput
+          autoComplete="new-password"
+          value={form.password}
+          error={errors.password}
+          onChange={set("password")}
+        />
       </Field>
-      <Field label="Department (optional)">
-        <input value={form.department} onChange={set("department")} placeholder="e.g. Engineering" className={cn(inputClass, "border-zinc-300")} />
-      </Field>
-      <Button type="submit" loading={submitting} className="w-full">
+      <Button type="submit" loading={submitting} className="w-full py-3">
         Join workspace
       </Button>
     </form>
@@ -87,15 +116,15 @@ function JoinForm() {
 export default function JoinPage() {
   return (
     <>
-      <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">Join your team</h1>
-      <p className="mt-1 text-sm text-zinc-500">Use the join code from your workspace admin.</p>
+      <h1 className="text-3xl font-semibold tracking-tight text-white">Join your team</h1>
+      <p className="mt-2 text-sm text-white/50">Use the join code your workspace admin shared with you.</p>
       {/* useSearchParams needs a Suspense boundary so the page can still be pre-rendered. */}
       <Suspense>
         <JoinForm />
       </Suspense>
-      <p className="mt-6 text-sm text-zinc-600">
+      <p className="mt-8 text-sm text-white/50">
         Already have an account?{" "}
-        <Link href="/login" className="font-medium text-indigo-600 hover:underline">
+        <Link href="/login" className="font-medium text-white underline-offset-4 hover:underline">
           Log in
         </Link>
       </p>

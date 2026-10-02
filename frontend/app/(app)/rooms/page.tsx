@@ -80,12 +80,12 @@ export default function RoomsPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: Math.min(i * 0.04, 0.3) }}
             >
-              <Card className={cn("flex h-full flex-col p-4", !room.is_active && "bg-zinc-50")}>
+              <Card className={cn("flex h-full flex-col p-4", !room.is_active && "bg-white/[0.03]")}>
                 <div className="flex items-start justify-between gap-2">
-                  <h3 className={cn("font-semibold", room.is_active ? "text-zinc-900" : "text-zinc-500")}>{room.name}</h3>
+                  <h3 className={cn("font-semibold", room.is_active ? "text-white" : "text-white/50")}>{room.name}</h3>
                   {room.is_active ? <Badge tone="green">Open</Badge> : <Badge tone="amber">Closed</Badge>}
                 </div>
-                <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-zinc-500">
+                <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-white/50">
                   <span className="inline-flex items-center gap-1">
                     <Users className="size-3.5" aria-hidden /> {room.capacity} seats
                   </span>

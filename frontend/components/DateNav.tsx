@@ -6,7 +6,7 @@ import { shiftDate } from "@/lib/time";
 import { Button, inputClass } from "./ui";
 
 const iconButton =
-  "grid size-9 shrink-0 place-items-center rounded-lg border border-zinc-300 bg-white text-zinc-600 hover:bg-zinc-50";
+  "grid size-10 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/[0.04] text-white/60 transition hover:bg-white/[0.08] hover:text-white active:scale-95";
 
 export default function DateNav({
   date,
@@ -28,12 +28,12 @@ export default function DateNav({
         value={date}
         // Clearing a native date input yields "", which isn't a date to show.
         onChange={(e) => e.target.value && onChange(e.target.value)}
-        className={`${inputClass} w-auto border-zinc-300`}
+        className={`${inputClass} max-w-44 border-white/10`}
       />
       <button type="button" className={iconButton} onClick={() => onChange(shiftDate(date, 1))} aria-label="Next day">
         <ChevronRight className="size-4" />
       </button>
-      <Button variant="ghost" onClick={() => onChange(today)} disabled={date === today} className="text-indigo-600">
+      <Button variant="ghost" onClick={() => onChange(today)} disabled={date === today} className="text-indigo-300">
         Today
       </Button>
     </div>

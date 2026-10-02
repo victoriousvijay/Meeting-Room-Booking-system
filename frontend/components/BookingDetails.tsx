@@ -16,8 +16,8 @@ type Props = {
 function Row({ icon: Icon, children }: { icon: typeof Clock; children: React.ReactNode }) {
   return (
     <div className="flex gap-3">
-      <Icon className="mt-0.5 size-4 shrink-0 text-zinc-400" aria-hidden />
-      <div className="min-w-0 flex-1 text-sm text-zinc-700">{children}</div>
+      <Icon className="mt-0.5 size-4 shrink-0 text-white/40" aria-hidden />
+      <div className="min-w-0 flex-1 text-sm text-white/80">{children}</div>
     </div>
   );
 }
@@ -48,32 +48,32 @@ export default function BookingDetails({ booking, onClose, onCancel }: Props) {
           <span className="tabular-nums">
             {booking.start_time}-{booking.end_time}
           </span>{" "}
-          <span className="text-zinc-500">· {formatDuration(minutes)}</span>
+          <span className="text-white/50">· {formatDuration(minutes)}</span>
         </Row>
         <Row icon={DoorOpen}>{booking.room_name}</Row>
         <Row icon={Users}>
           <ul className="space-y-2">
             <li className="flex items-center gap-2">
               <Avatar name={booking.organizer.name} size="sm" />
-              <span className="font-medium text-zinc-800">{booking.organizer.name}</span>
-              <span className="text-xs text-zinc-500">organiser</span>
+              <span className="font-medium text-white/90">{booking.organizer.name}</span>
+              <span className="text-xs text-white/50">organiser</span>
             </li>
             {booking.attendees.map((a) => (
               <li key={a.id} className="flex items-center gap-2">
                 <Avatar name={a.name} size="sm" />
                 <span>{a.name}</span>
-                {a.department && <span className="text-xs text-zinc-500">{a.department}</span>}
+                {a.department && <span className="text-xs text-white/50">{a.department}</span>}
               </li>
             ))}
           </ul>
         </Row>
 
-        <div className="flex items-center justify-end gap-2 border-t border-zinc-100 pt-4">
+        <div className="flex items-center justify-end gap-2 border-t border-white/[0.06] pt-4">
           {!booking.can_cancel ? (
-            <p className="mr-auto text-xs text-zinc-500">Only the organiser or an admin can cancel this.</p>
+            <p className="mr-auto text-xs text-white/50">Only the organiser or an admin can cancel this.</p>
           ) : confirming ? (
             <>
-              <span className="mr-auto text-sm text-zinc-700">Cancel this booking?</span>
+              <span className="mr-auto text-sm text-white/80">Cancel this booking?</span>
               <Button variant="ghost" onClick={() => setConfirming(false)} disabled={cancelling}>
                 Keep
               </Button>
@@ -82,7 +82,7 @@ export default function BookingDetails({ booking, onClose, onCancel }: Props) {
               </Button>
             </>
           ) : (
-            <Button variant="secondary" onClick={() => setConfirming(true)} className="text-red-600">
+            <Button variant="secondary" onClick={() => setConfirming(true)} className="text-red-300">
               Cancel booking
             </Button>
           )}

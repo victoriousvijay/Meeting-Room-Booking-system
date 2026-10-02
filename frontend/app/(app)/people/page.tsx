@@ -47,13 +47,13 @@ export default function PeoplePage() {
         description={`Everyone in ${me.workspace.name}.`}
         actions={
           <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-400" aria-hidden />
+            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-white/40" aria-hidden />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search people"
               aria-label="Search people"
-              className={`${inputClass} w-56 border-zinc-300 pl-9`}
+              className={`${inputClass} w-56 border-white/10 pl-9`}
             />
           </div>
         }
@@ -74,7 +74,7 @@ export default function PeoplePage() {
       ) : (
         <Card className="overflow-hidden">
           <table className="w-full text-left text-sm">
-            <thead className="border-b border-zinc-200 bg-zinc-50 text-xs uppercase tracking-wide text-zinc-500">
+            <thead className="border-b border-white/10 bg-white/[0.03] text-xs uppercase tracking-wide text-white/50">
               <tr>
                 <th className="px-4 py-2.5 font-medium">Name</th>
                 <th className="hidden px-4 py-2.5 font-medium md:table-cell">Team</th>
@@ -82,23 +82,23 @@ export default function PeoplePage() {
                 {isAdmin && <th className="px-4 py-2.5 text-right font-medium">Manage</th>}
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-100">
+            <tbody className="divide-y divide-white/[0.06]">
               {shown.map((p) => {
                 const isMe = p.id === me.id;
                 return (
-                  <tr key={p.id} className={cn(!p.is_active && "bg-zinc-50 text-zinc-400")}>
+                  <tr key={p.id} className={cn(!p.is_active && "bg-white/[0.03] text-white/40")}>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <Avatar name={p.name} />
                         <div className="min-w-0">
-                          <p className="truncate font-medium text-zinc-900">
-                            {p.name} {isMe && <span className="font-normal text-zinc-500">(you)</span>}
+                          <p className="truncate font-medium text-white">
+                            {p.name} {isMe && <span className="font-normal text-white/50">(you)</span>}
                           </p>
-                          <p className="truncate text-xs text-zinc-500">{p.email}</p>
+                          <p className="truncate text-xs text-white/50">{p.email}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="hidden px-4 py-3 text-zinc-600 md:table-cell">{p.department || "-"}</td>
+                    <td className="hidden px-4 py-3 text-white/60 md:table-cell">{p.department || "-"}</td>
                     <td className="px-4 py-3">
                       <div className="flex flex-wrap gap-1">
                         <Badge tone={p.role === "admin" ? "indigo" : "neutral"}>{p.role === "admin" ? "Admin" : "Member"}</Badge>
@@ -130,7 +130,7 @@ export default function PeoplePage() {
                               size="sm"
                               variant="ghost"
                               loading={busyId === p.id}
-                              className={p.is_active ? "text-red-600" : ""}
+                              className={p.is_active ? "text-red-300" : ""}
                               onClick={() =>
                                 update(
                                   p,

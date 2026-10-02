@@ -21,14 +21,14 @@ export default function InviteCard({ workspace, children }: { workspace: Workspa
 
   return (
     <Card className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center">
-      <span className="grid size-10 shrink-0 place-items-center rounded-full bg-indigo-50 text-indigo-600">
+      <span className="grid size-10 shrink-0 place-items-center rounded-full bg-indigo-500/15 text-indigo-300">
         <UserPlus className="size-5" aria-hidden />
       </span>
       <div className="min-w-0 flex-1">
-        <p className="text-sm font-medium text-zinc-900">Invite your team</p>
-        <p className="text-sm text-zinc-500">
-          They sign up at <span className="font-medium text-zinc-700">/join</span> with code{" "}
-          <span className="rounded bg-zinc-100 px-1.5 py-0.5 font-mono font-semibold tracking-wider text-zinc-900">
+        <p className="text-sm font-medium text-white">Invite your team</p>
+        <p className="text-sm text-white/50">
+          They sign up at <span className="font-medium text-white/80">/join</span> with code{" "}
+          <span className="rounded bg-white/[0.06] px-1.5 py-0.5 font-mono font-semibold tracking-wider text-white">
             {workspace.join_code}
           </span>
         </p>

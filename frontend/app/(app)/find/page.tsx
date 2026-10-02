@@ -106,7 +106,7 @@ export default function FindRoomPage() {
               onClick={() => setDurationText(String(d))}
               className={cn(
                 "rounded-full border px-3 py-1 text-xs font-medium transition",
-                duration === d ? "border-indigo-600 bg-indigo-600 text-white" : "border-zinc-300 text-zinc-600 hover:bg-zinc-50",
+                duration === d ? "border-indigo-600 bg-indigo-600 text-white" : "border-white/10 text-white/60 hover:bg-white/[0.05]",
               )}
             >
               {formatDuration(d)}
@@ -116,7 +116,7 @@ export default function FindRoomPage() {
 
         {allAmenities.length > 0 && (
           <div>
-            <p className="mb-1.5 text-sm font-medium text-zinc-700">Must have</p>
+            <p className="mb-1.5 text-sm font-medium text-white/80">Must have</p>
             <div className="flex flex-wrap gap-1.5">
               {allAmenities.map((a) => (
                 <button
@@ -126,8 +126,8 @@ export default function FindRoomPage() {
                   className={cn(
                     "rounded-full border px-3 py-1 text-xs font-medium transition",
                     amenities.includes(a)
-                      ? "border-emerald-600 bg-emerald-50 text-emerald-800"
-                      : "border-zinc-300 text-zinc-600 hover:bg-zinc-50",
+                      ? "border-emerald-600 bg-emerald-500/15 text-emerald-200"
+                      : "border-white/10 text-white/60 hover:bg-white/[0.05]",
                   )}
                 >
                   {a}
@@ -152,7 +152,7 @@ export default function FindRoomPage() {
         />
       ) : (
         <>
-          <p className="mb-3 text-sm text-zinc-500">
+          <p className="mb-3 text-sm text-white/50">
             {matches.length} room{matches.length === 1 ? "" : "s"} free for {formatDuration(duration)} ·{" "}
             {dayLabel(date, today)} · earliest first
           </p>
@@ -166,10 +166,10 @@ export default function FindRoomPage() {
               >
                 <Card className="flex h-full flex-col p-4">
                   <div className="flex items-start justify-between gap-2">
-                    <h3 className="font-semibold text-zinc-900">{room.name}</h3>
+                    <h3 className="font-semibold text-white">{room.name}</h3>
                     {i === 0 && <Badge tone="green">Best match</Badge>}
                   </div>
-                  <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-zinc-500">
+                  <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-white/50">
                     <span className="inline-flex items-center gap-1">
                       <Users className="size-3.5" aria-hidden /> {room.capacity} seats
                     </span>
@@ -187,7 +187,7 @@ export default function FindRoomPage() {
                     </div>
                   )}
                   <div className="mt-auto flex items-center justify-between gap-2 pt-4">
-                    <span className="inline-flex items-center gap-1.5 text-sm font-medium tabular-nums text-emerald-700">
+                    <span className="inline-flex items-center gap-1.5 text-sm font-medium tabular-nums text-emerald-300">
                       <Clock className="size-4" aria-hidden />
                       {start_time}-{end_time}
                     </span>

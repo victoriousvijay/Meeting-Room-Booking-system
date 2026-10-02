@@ -47,12 +47,12 @@ export default function SchedulePage() {
       <Card className="mb-4 flex flex-col gap-3 p-3 sm:flex-row sm:items-center sm:justify-between">
         {date && today && <DateNav date={date} today={today} onChange={setPicked} />}
         <label className="flex items-center gap-2">
-          <DoorOpen className="size-4 text-zinc-400" aria-hidden />
+          <DoorOpen className="size-4 text-white/40" aria-hidden />
           <span className="sr-only">Filter by room</span>
           <select
             value={roomId ?? ""}
             onChange={(e) => setRoomId(e.target.value ? Number(e.target.value) : null)}
-            className={`${inputClass} w-full border-zinc-300 sm:w-48`}
+            className={`${inputClass} w-full border-white/10 sm:w-48`}
           >
             <option value="">All rooms</option>
             {(rooms.data ?? []).map((r) => (
@@ -91,8 +91,8 @@ export default function SchedulePage() {
             </div>
           </Card>
 
-          <h2 className="mb-3 mt-8 font-semibold text-zinc-900">
-            Agenda <span className="font-normal text-zinc-500">· {bookings.data.length} bookings</span>
+          <h2 className="mb-3 mt-8 font-semibold text-white">
+            Agenda <span className="font-normal text-white/50">· {bookings.data.length} bookings</span>
           </h2>
           {bookings.data.length === 0 ? (
             <EmptyState icon={CalendarX} title="Nothing booked" description="Every room is free all day." />
@@ -108,17 +108,17 @@ export default function SchedulePage() {
                   <button
                     type="button"
                     onClick={() => showBooking(b)}
-                    className="flex w-full items-center gap-4 rounded-xl border border-zinc-200 bg-white p-3 text-left transition hover:border-indigo-300"
+                    className="flex w-full items-center gap-4 rounded-xl glass p-3 text-left transition hover:border-white/20"
                   >
                     <div className="w-24 shrink-0 text-sm tabular-nums">
-                      <p className="font-medium text-zinc-900">{b.start_time}</p>
-                      <p className="text-xs text-zinc-500">
+                      <p className="font-medium text-white">{b.start_time}</p>
+                      <p className="text-xs text-white/50">
                         {formatDuration(toMinutes(b.end_time) - toMinutes(b.start_time))}
                       </p>
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium text-zinc-900">{b.title}</p>
-                      <p className="truncate text-xs text-zinc-500">
+                      <p className="truncate text-sm font-medium text-white">{b.title}</p>
+                      <p className="truncate text-xs text-white/50">
                         {b.room_name} · by {b.organizer.name}
                       </p>
                     </div>

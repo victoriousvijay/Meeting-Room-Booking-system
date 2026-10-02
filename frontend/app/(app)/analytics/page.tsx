@@ -80,20 +80,20 @@ function Report({ data }: { data: Analytics }) {
       </div>
 
       <Card className="p-4 sm:p-5">
-        <h2 className="font-semibold text-zinc-900">Bookings per day</h2>
+        <h2 className="font-semibold text-white">Bookings per day</h2>
         <div className="mt-4 flex h-40 items-end gap-px sm:gap-1" role="img" aria-label="Bookings per day chart">
           {data.per_day.map((d, i) => (
             <motion.div
               key={d.date}
               title={`${formatDateShort(d.date)}: ${d.bookings} booking${d.bookings === 1 ? "" : "s"}`}
-              className="flex-1 rounded-t bg-indigo-500 hover:bg-indigo-600"
+              className="flex-1 rounded-t bg-gradient-to-t from-indigo-600 to-indigo-400 hover:from-indigo-500 hover:to-indigo-300"
               initial={{ height: 0 }}
               animate={{ height: `${Math.max((d.bookings / busiestDay) * 100, d.bookings ? 4 : 1)}%` }}
               transition={{ delay: Math.min(i * 0.01, 0.4), duration: 0.4 }}
             />
           ))}
         </div>
-        <div className="mt-2 flex justify-between text-[11px] text-zinc-400">
+        <div className="mt-2 flex justify-between text-[11px] text-white/40">
           <span>{formatDateShort(data.start)}</span>
           <span>{formatDateShort(data.end)}</span>
         </div>
@@ -101,18 +101,18 @@ function Report({ data }: { data: Analytics }) {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="p-4 sm:p-5">
-          <h2 className="font-semibold text-zinc-900">Room usage</h2>
-          <p className="text-xs text-zinc-500">Share of 09:00-18:00 that each room was booked.</p>
+          <h2 className="font-semibold text-white">Room usage</h2>
+          <p className="text-xs text-white/50">Share of 09:00-18:00 that each room was booked.</p>
           <ul className="mt-4 space-y-3">
             {data.per_room.map((r) => (
               <li key={r.room_id}>
                 <div className="mb-1 flex justify-between text-sm">
-                  <span className="text-zinc-800">{r.room_name}</span>
-                  <span className="tabular-nums text-zinc-500">
+                  <span className="text-white/90">{r.room_name}</span>
+                  <span className="tabular-nums text-white/50">
                     {r.utilization_pct}% · {(r.booked_minutes / 60).toFixed(1)} h
                   </span>
                 </div>
-                <div className="h-2 overflow-hidden rounded-full bg-zinc-100">
+                <div className="h-2 overflow-hidden rounded-full bg-white/[0.06]">
                   <motion.div
                     className="h-full rounded-full bg-emerald-500"
                     initial={{ width: 0 }}
@@ -126,18 +126,18 @@ function Report({ data }: { data: Analytics }) {
         </Card>
 
         <Card className="p-4 sm:p-5">
-          <h2 className="font-semibold text-zinc-900">Top organisers</h2>
-          <p className="text-xs text-zinc-500">Who books the most meetings.</p>
+          <h2 className="font-semibold text-white">Top organisers</h2>
+          <p className="text-xs text-white/50">Who books the most meetings.</p>
           {data.top_organizers.length === 0 ? (
-            <p className="mt-4 text-sm text-zinc-500">No bookings in this period.</p>
+            <p className="mt-4 text-sm text-white/50">No bookings in this period.</p>
           ) : (
             <ol className="mt-4 space-y-3">
               {data.top_organizers.map((o, i) => (
                 <li key={o.user_id} className="flex items-center gap-3">
-                  <span className="w-4 text-sm tabular-nums text-zinc-400">{i + 1}</span>
+                  <span className="w-4 text-sm tabular-nums text-white/40">{i + 1}</span>
                   <Avatar name={o.name} size="sm" />
-                  <span className="flex-1 text-sm text-zinc-800">{o.name}</span>
-                  <span className="text-sm tabular-nums text-zinc-500">
+                  <span className="flex-1 text-sm text-white/90">{o.name}</span>
+                  <span className="text-sm tabular-nums text-white/50">
                     {o.bookings} booking{o.bookings === 1 ? "" : "s"}
                   </span>
                 </li>

@@ -62,9 +62,9 @@ export default function MeetingsPage() {
         <div className="space-y-6">
           {groupByDate(meetings.data).map(([date, list]) => (
             <section key={date}>
-              <h2 className="mb-2 text-sm font-semibold text-zinc-900">
+              <h2 className="mb-2 text-sm font-semibold text-white">
                 {dayLabel(date, today)}{" "}
-                <span className="font-normal text-zinc-500">· {formatDateLong(date)}</span>
+                <span className="font-normal text-white/50">· {formatDateLong(date)}</span>
               </h2>
               <ul className="grid gap-3 sm:grid-cols-2">
                 {list.map((b, i) => (
@@ -77,15 +77,15 @@ export default function MeetingsPage() {
                     <button
                       type="button"
                       onClick={() => showBooking(b)}
-                      className="w-full rounded-xl border border-zinc-200 bg-white p-4 text-left transition hover:border-indigo-300 hover:shadow-sm"
+                      className="w-full rounded-xl glass p-4 text-left transition hover:border-white/20 hover:shadow-sm"
                     >
                       <div className="flex items-start justify-between gap-3">
-                        <p className="font-medium text-zinc-900">{b.title}</p>
+                        <p className="font-medium text-white">{b.title}</p>
                         <Badge tone={b.my_role === "organizer" ? "indigo" : "green"}>
                           {b.my_role === "organizer" ? "Organiser" : "Invited"}
                         </Badge>
                       </div>
-                      <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-zinc-500">
+                      <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-white/50">
                         <span className="inline-flex items-center gap-1 tabular-nums">
                           <Clock className="size-3.5" aria-hidden /> {b.start_time}-{b.end_time}
                         </span>
@@ -94,7 +94,7 @@ export default function MeetingsPage() {
                         </span>
                       </div>
                       <div className="mt-3 flex items-center justify-between">
-                        <span className="text-xs text-zinc-500">
+                        <span className="text-xs text-white/50">
                           {b.my_role === "organizer" ? "You" : b.organizer.name}
                           {b.attendees.length > 0 &&
                             ` + ${b.attendees.length} ${b.attendees.length === 1 ? "other" : "others"}`}

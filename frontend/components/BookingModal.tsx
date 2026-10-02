@@ -69,10 +69,10 @@ export default function BookingModal({ me, rooms, people, loadError, initial, on
     return (
       <Modal title="New booking" onClose={onClose} wide>
         {loadError ? (
-          <p className="text-sm text-red-600">{loadError}</p>
+          <p className="text-sm text-red-300">{loadError}</p>
         ) : (
           <div className="flex justify-center py-10">
-            <LoaderCircle className="size-6 animate-spin text-indigo-600" aria-label="Loading" />
+            <LoaderCircle className="size-6 animate-spin text-indigo-300" aria-label="Loading" />
           </div>
         )}
       </Modal>
@@ -145,9 +145,9 @@ export default function BookingModal({ me, rooms, people, loadError, initial, on
 
         <div>
           <div className="mb-1 flex items-baseline justify-between">
-            <span className="text-sm font-medium text-zinc-700">Attendees</span>
+            <span className="text-sm font-medium text-white/80">Attendees</span>
             {room && (
-              <span className={cn("text-xs tabular-nums", headcount > room.capacity ? "text-red-600" : "text-zinc-500")}>
+              <span className={cn("text-xs tabular-nums", headcount > room.capacity ? "text-red-300" : "text-white/50")}>
                 {headcount} of {room.capacity} seats (you included)
               </span>
             )}
@@ -157,10 +157,10 @@ export default function BookingModal({ me, rooms, people, loadError, initial, on
             value={form.attendeeIds}
             onChange={(ids) => update("attendeeIds", ids)}
           />
-          {errors.attendeeIds && <p className="mt-1 text-xs text-red-600">{errors.attendeeIds}</p>}
+          {errors.attendeeIds && <p className="mt-1 text-xs text-red-300">{errors.attendeeIds}</p>}
         </div>
 
-        <p className="text-xs text-zinc-500">
+        <p className="text-xs text-white/50">
           Rooms can be booked between {WORK_START} and {WORK_END}.
           {duration > 0 && ` This meeting is ${formatDuration(duration)}.`}
         </p>

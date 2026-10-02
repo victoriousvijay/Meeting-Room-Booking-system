@@ -23,12 +23,12 @@ export default function SettingsPage() {
 
       <div className="space-y-6">
         <Card className="p-5">
-          <h2 className="font-semibold text-zinc-900">Your profile</h2>
+          <h2 className="font-semibold text-white">Your profile</h2>
           <div className="mt-4 flex items-center gap-4">
             <Avatar name={me.name} size="lg" />
             <div>
-              <p className="font-medium text-zinc-900">{me.name}</p>
-              <p className="text-sm text-zinc-500">{me.email}</p>
+              <p className="font-medium text-white">{me.name}</p>
+              <p className="text-sm text-white/50">{me.email}</p>
               <div className="mt-1 flex gap-1">
                 <Badge tone={isAdmin ? "indigo" : "neutral"}>{isAdmin ? "Admin" : "Member"}</Badge>
                 {me.department && <Badge>{me.department}</Badge>}
@@ -92,15 +92,15 @@ function WorkspaceSettings({ workspace, onChanged }: { workspace: Workspace; onC
   return (
     <>
       <Card className="p-5">
-        <h2 className="font-semibold text-zinc-900">Workspace</h2>
-        <p className="text-sm text-zinc-500">
+        <h2 className="font-semibold text-white">Workspace</h2>
+        <p className="text-sm text-white/50">
           {workspace.member_count} active member{workspace.member_count === 1 ? "" : "s"} · {workspace.room_count} room
           {workspace.room_count === 1 ? "" : "s"}
         </p>
         <form onSubmit={rename} className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-end">
           <div className="flex-1">
             <Field label="Workspace name">
-              <input value={name} onChange={(e) => setName(e.target.value)} maxLength={120} className={`${inputClass} border-zinc-300`} />
+              <input value={name} onChange={(e) => setName(e.target.value)} maxLength={120} className={`${inputClass} border-white/10`} />
             </Field>
           </div>
           <Button type="submit" loading={saving} disabled={name.trim() === workspace.name}>

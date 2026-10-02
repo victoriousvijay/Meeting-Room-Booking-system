@@ -88,22 +88,22 @@ export default function RoomFormModal({ room, onClose, onSaved }: Props) {
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             placeholder="e.g. Floor 2 - east wing"
-            className={cn(inputClass, "border-zinc-300")}
+            className={cn(inputClass, "border-white/10")}
           />
         </Field>
 
         <div>
-          <span className="mb-1 block text-sm font-medium text-zinc-700">Amenities</span>
+          <span className="mb-1 block text-sm font-medium text-white/80">Amenities</span>
           {amenities.length > 0 && (
             <div className="mb-2 flex flex-wrap gap-1.5">
               {amenities.map((a) => (
-                <span key={a} className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs text-emerald-800">
+                <span key={a} className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-xs text-emerald-200">
                   {a}
                   <button
                     type="button"
                     onClick={() => setAmenities(amenities.filter((x) => x !== a))}
                     aria-label={`Remove ${a}`}
-                    className="rounded-full hover:bg-emerald-100"
+                    className="rounded-full hover:bg-emerald-500/25"
                   >
                     <X className="size-3" />
                   </button>
@@ -117,7 +117,7 @@ export default function RoomFormModal({ room, onClose, onSaved }: Props) {
                 key={s}
                 type="button"
                 onClick={() => addAmenity(s)}
-                className="inline-flex items-center gap-1 rounded-full border border-dashed border-zinc-300 px-2.5 py-0.5 text-xs text-zinc-600 hover:bg-zinc-50"
+                className="inline-flex items-center gap-1 rounded-full border border-dashed border-white/10 px-2.5 py-0.5 text-xs text-white/60 hover:bg-white/[0.05]"
               >
                 <Plus className="size-3" aria-hidden /> {s}
               </button>
@@ -135,7 +135,7 @@ export default function RoomFormModal({ room, onClose, onSaved }: Props) {
             }}
             maxLength={30}
             placeholder="Something else? Type and press Enter"
-            className={cn(inputClass, "mt-2 border-zinc-300")}
+            className={cn(inputClass, "mt-2 border-white/10")}
           />
         </div>
 

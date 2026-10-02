@@ -7,6 +7,7 @@ booked between 09:00 and 18:00.
 
 | | |
 |---|---|
+| Landing page | https://roomsync-landing.vercel.app |
 | Live app | https://roomsync-nine.vercel.app |
 | API | https://roomsync-api-2mnn.onrender.com |
 | API docs | https://roomsync-api-2mnn.onrender.com/docs |
@@ -94,6 +95,7 @@ backend/app/
     workspace.py       #   name and join code
     analytics.py       #   usage numbers
   routers/             # thin HTTP endpoints, no logic: check access, call a service
+landing/               # standalone marketing page (Vite + React), see landing/README.md
 backend/tests/
   test_scheduling.py   # every edge case of the core logic
   test_api.py          # endpoints, permissions and workspace isolation

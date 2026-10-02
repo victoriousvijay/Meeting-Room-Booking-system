@@ -1,0 +1,125 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: "Inter", sans-serif;
+  background-color: #000000;
+}
+
+/* ---------- octagonal "cut corner" buttons ---------- */
+
+/* Large buttons: every corner cut by 12px. */
+.btn-cut {
+  clip-path: polygon(
+    12px 0%,
+    calc(100% - 12px) 0%,
+    100% 12px,
+    100% calc(100% - 12px),
+    calc(100% - 12px) 100%,
+    12px 100%,
+    0% calc(100% - 12px),
+    0% 12px
+  );
+}
+
+/* Outline variant: a white octagon with a black octagon 1px inside it, so only
+   a 1px white edge shows. Children sit above the black layer. */
+.btn-cut-border {
+  position: relative;
+  background: white;
+  clip-path: polygon(
+    12px 0%,
+    calc(100% - 12px) 0%,
+    100% 12px,
+    100% calc(100% - 12px),
+    calc(100% - 12px) 100%,
+    12px 100%,
+    0% calc(100% - 12px),
+    0% 12px
+  );
+}
+
+.btn-cut-border::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  background: black;
+  clip-path: polygon(
+    11px 0%,
+    calc(100% - 11px) 0%,
+    100% 11px,
+    100% calc(100% - 11px),
+    calc(100% - 11px) 100%,
+    11px 100%,
+    0% calc(100% - 11px),
+    0% 11px
+  );
+  z-index: 0;
+  transition: background-color 0.2s;
+}
+
+.btn-cut-border > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* The black inner layer would hide a hover background, so tint it instead. */
+.btn-cut-border:hover::before {
+  background: #1a1a1a;
+}
+
+/* Small social buttons: 8px cuts. */
+.btn-cut-sm {
+  clip-path: polygon(
+    8px 0%,
+    calc(100% - 8px) 0%,
+    100% 8px,
+    100% calc(100% - 8px),
+    calc(100% - 8px) 100%,
+    8px 100%,
+    0% calc(100% - 8px),
+    0% 8px
+  );
+}
+
+/* ---------- entrance animations ---------- */
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.anim-stagger {
+  opacity: 0;
+  animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.anim-fade {
+  opacity: 0;
+  animation: fadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Visitors who ask for less motion get everything in place immediately. */
+@media (prefers-reduced-motion: reduce) {
+  .anim-stagger,
+  .anim-fade {
+    animation: none;
+    opacity: 1;
+  }
+}

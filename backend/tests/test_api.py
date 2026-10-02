@@ -224,6 +224,15 @@ def test_available_rooms_sorted_and_filtered_by_size(client, ws):
     assert rooms == [("Yamuna", "09:00"), ("Ganga", "10:00")]
 
 
+def test_available_rooms_after_a_time(client, ws):
+    res = client.get(
+        "/api/rooms/available",
+        params={"date": DATE, "duration": 30, "capacity": 1, "after": "16:20"},
+        headers=ws.alice.headers,
+    )
+    assert {r["start_time"] for r in res.json()} == {"16:20"}
+
+
 # ---------- admin-only ----------
 
 

@@ -17,6 +17,7 @@ from app.services import rooms as room_service
 router = APIRouter(prefix="/api/rooms", tags=["rooms"])
 
 Duration = Query(gt=0, le=WORKING_MINUTES, description="Length in minutes")
+After = Query(None, description="Ignore time before this, e.g. the current time when searching today")
 
 
 @router.get("", response_model=list[RoomOut])
@@ -50,10 +51,11 @@ def available_rooms(
     date: dt.date = Query(examples=["2026-09-15"]),
     duration: int = Duration,
     capacity: int = Query(1, ge=1, le=500, description="People attending, organiser included"),
+    after: dt.time | None = After,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    return room_service.available_rooms(db, user.org_id, date, duration, capacity)
+    return room_service.available_rooms(db, user.org_id, date, duration, capacity, after)
 
 
 @router.get("/{room_id}", response_model=RoomOut, responses={404: {"model": ErrorOut}})
@@ -86,7 +88,8 @@ def next_available(
     room_id: int,
     date: dt.date = Query(examples=["2026-09-15"]),
     duration: int = Duration,
+    after: dt.time | None = After,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    return room_service.next_available_slot(db, user.org_id, room_id, date, duration)
+    return room_service.next_available_slot(db, user.org_id, room_id, date, duration, after)

@@ -13,12 +13,12 @@ DEMO_PASSWORD = "demo1234"
 
 PEOPLE = [
     # name, email, role, department
-    ("Ananya Sharma", "ananya@nimbus.test", "admin", "Operations"),
-    ("Rohan Mehta", "rohan@nimbus.test", "member", "Engineering"),
-    ("Priya Iyer", "priya@nimbus.test", "member", "Design"),
-    ("Arjun Singh", "arjun@nimbus.test", "member", "Sales"),
-    ("Kavya Nair", "kavya@nimbus.test", "member", "People & HR"),
-    ("Ishaan Gupta", "ishaan@nimbus.test", "member", "Engineering"),
+    ("Vijay Sharma", "vijay@nimbus.test", "admin", "Operations"),
+    ("Vidhi Agarwal", "vidhi@nimbus.test", "member", "Engineering"),
+    ("Shruti Verma", "shruti@nimbus.test", "member", "Design"),
+    ("Karan Malhotra", "karan@nimbus.test", "member", "Sales"),
+    ("Neha Joshi", "neha@nimbus.test", "member", "People & HR"),
+    ("Aman Khanna", "aman@nimbus.test", "member", "Engineering"),
 ]
 
 ROOMS = [
@@ -37,7 +37,7 @@ BOOKINGS = [
     (0, 2, 2, "Design review", "11:00", "12:30", [1, 5, 0]),
     (0, 1, 3, "Client call - Tata Motors", "14:00", "14:45", [0]),
     (0, 4, 0, "Monthly all-hands", "15:00", "16:00", [1, 2, 3, 4, 5]),
-    (1, 0, 0, "1:1 Ananya / Rohan", "10:00", "10:30", [1]),
+    (1, 0, 0, "1:1 Vijay / Vidhi", "10:00", "10:30", [1]),
     (1, 3, 4, "Hiring panel", "13:00", "14:30", [0, 1]),
     (2, 2, 2, "Brand workshop", "11:00", "13:00", [3, 4]),
     (-1, 0, 1, "Daily stand-up", "09:30", "10:00", [5, 2]),

@@ -69,9 +69,11 @@ def bookings_for_room_on(db: Session, room_id: int, date: dt.date) -> list[Booki
     return list(db.scalars(stmt))
 
 
-def next_available_slot(db: Session, org_id: int, room_id: int, date: dt.date, duration: int) -> NextSlotOut:
+def next_available_slot(
+    db: Session, org_id: int, room_id: int, date: dt.date, duration: int, after: dt.time | None = None
+) -> NextSlotOut:
     room = get_room(db, org_id, room_id)
-    slot = find_next_slot(bookings_for_room_on(db, room_id, date), duration)
+    slot = find_next_slot(bookings_for_room_on(db, room_id, date), duration, after or WORK_START)
 
     if slot is None:
         message = (
@@ -99,7 +101,7 @@ def next_available_slot(db: Session, org_id: int, room_id: int, date: dt.date, d
 
 
 def available_rooms(
-    db: Session, org_id: int, date: dt.date, duration: int, min_capacity: int
+    db: Session, org_id: int, date: dt.date, duration: int, min_capacity: int, after: dt.time | None = None
 ) -> list[AvailableRoomOut]:
     """Every room big enough for the meeting, with its earliest free slot that day."""
     rooms = [r for r in list_rooms(db, org_id) if r.capacity >= min_capacity]
@@ -116,7 +118,7 @@ def available_rooms(
 
     results = []
     for room in rooms:
-        slot = find_next_slot(by_room[room.id], duration)
+        slot = find_next_slot(by_room[room.id], duration, after or WORK_START)
         if slot:
             results.append(
                 AvailableRoomOut(room=RoomOut.model_validate(room), start_time=slot[0], end_time=slot[1])

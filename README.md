@@ -5,15 +5,18 @@ rooms, people and bookings. Members book rooms and invite colleagues; admins man
 and people and see usage analytics. Overlapping bookings are impossible, and rooms can be
 booked between 09:00 and 18:00.
 
-> **Branches:** `main` is the original take-home submission (single page, no login), and
-> it's what the live links below currently run. `saas` (this README) extends it into a full
-> product. Its backend schema is different, so it needs a fresh database when deployed.
+> **Branches:** `main` is the original take-home submission (single page, no login).
+> `saas` (this README) extends it into a full product. Both are deployed separately and
+> share one Supabase database, with the SaaS tables in their own `roomsync` schema.
 
-| | |
-|---|---|
-| Frontend (Vercel, `main`) | https://meeting-room-booking-three-eta.vercel.app |
-| Backend (Render, `main`) | https://meeting-room-booking-api-pbef.onrender.com |
-| API docs | https://meeting-room-booking-api-pbef.onrender.com/docs |
+| | SaaS version (`saas`) | Assignment (`main`) |
+|---|---|---|
+| Frontend (Vercel) | https://roomsync-nine.vercel.app | https://meeting-room-booking-three-eta.vercel.app |
+| Backend (Render) | https://roomsync-api-2mnn.onrender.com | https://meeting-room-booking-api-pbef.onrender.com |
+| API docs | https://roomsync-api-2mnn.onrender.com/docs | https://meeting-room-booking-api-pbef.onrender.com/docs |
+
+Both backends are on Render's free tier and sleep when idle; the first request after a quiet
+spell can take up to a minute.
 
 > **Note on tooling:** this project was built with the help of Claude Code (an AI coding
 > assistant), which Rustam confirmed was allowed for this assignment.

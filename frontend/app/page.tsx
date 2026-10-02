@@ -5,8 +5,8 @@ import {
   BarChart3,
   CalendarCheck,
   CalendarClock,
+  Search,
   ShieldCheck,
-  Sparkles,
   Users,
   type LucideIcon,
 } from "lucide-react";
@@ -22,7 +22,7 @@ import { DEMO_ACCOUNTS } from "@/lib/demo";
 
 const FEATURES: { icon: LucideIcon; title: string; text: string }[] = [
   { icon: CalendarCheck, title: "No double-booking", text: "Overlaps are rejected the moment they happen, and you're told exactly which meeting is in the way." },
-  { icon: Sparkles, title: "Find a room in one step", text: "Say how long and how many people; get every room that fits, earliest free slot first." },
+  { icon: Search, title: "Find a room in one step", text: "Say how long and how many people; get every room that fits, earliest free slot first." },
   { icon: Users, title: "Organiser and attendees", text: "Invite teammates to a booking. Everyone sees their meetings in one place." },
   { icon: CalendarClock, title: "The whole day at a glance", text: "A live timeline of every room. Click an empty slot to book it." },
   { icon: BarChart3, title: "Know how space is used", text: "Bookings per day, room utilisation and top organisers for admins." },
@@ -74,10 +74,7 @@ export default function LandingPage() {
 
       <section className="mx-auto max-w-6xl px-4 pb-16 pt-10 text-center sm:px-6 sm:pt-16">
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
-            <Sparkles className="size-3.5" aria-hidden /> Meeting room booking for growing teams
-          </span>
-          <h1 className="mx-auto mt-5 max-w-3xl text-4xl font-semibold tracking-tight text-zinc-900 sm:text-5xl">
+          <h1 className="mx-auto max-w-3xl text-4xl font-semibold tracking-tight text-zinc-900 sm:text-5xl">
             Meeting rooms, minus the chaos.
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-base text-zinc-600 sm:text-lg">
